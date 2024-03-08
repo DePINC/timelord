@@ -1,0 +1,16 @@
+{
+    "dependencies": [
+        "cxxopts",
+        "plog",
+        "jsoncpp",
+        "fmt",
+        "curl",
+        "sqlite3",
+        "openssl",
+        "boost"
+    ],
+    "builtin-baseline": "ab887c562326c686478284d9076d722c1ec4b48c",
+    "overrides": [
+        { "name": "boost", "version": "1.82.0" }
+    ]
+}
