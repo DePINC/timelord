@@ -8,8 +8,6 @@
 #include <filesystem>
 namespace fs = std::filesystem;
 
-#include "asio_defs.hpp"
-
 #include "vdf_client_man.h"
 
 #include "timelord_utils.h"

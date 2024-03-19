@@ -6,8 +6,10 @@
 
 #include "last_block_info_querier.hpp"
 
+namespace {
 char const* SZ_RPC_URL = "http://127.0.0.1:18732";
 char const* SZ_RPC_COOKIE_PATH = "$HOME/.btchd/testnet3/.cookie";
+}
 
 class BlockQuerierTest : public testing::Test
 {

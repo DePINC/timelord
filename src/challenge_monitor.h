@@ -4,16 +4,12 @@
 #include <boost/asio.hpp>
 namespace asio = boost::asio;
 
-#include <memory>
 #include <set>
-#include <tuple>
 
 #include <string>
-#include <string_view>
 
 #include "common_types.h"
-
-#include <rpc_client.h>
+#include "rpc_client.h"
 
 class ChallengeMonitor
 {
