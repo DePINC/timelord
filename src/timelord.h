@@ -12,8 +12,6 @@
 
 #include "common_types.h"
 
-#include "block_info.h"
-
 #include "querier_defs.h"
 #include "challenge_monitor.h"
 #include "frontend.h"

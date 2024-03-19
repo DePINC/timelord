@@ -195,7 +195,7 @@ void Timelord::HandleChallengeMonitor_NewChallenge(uint256 const& old_challenge,
     }
 
     // we should query last new block info. and save it to local database
-    auto new_blocks = block_info_querier_(1);
+    auto new_blocks = block_info_querier_(1, 0);
     if (!new_blocks.empty()) {
         auto const& block_info = new_blocks.front();
         // check the block height before we save it

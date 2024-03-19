@@ -16,7 +16,9 @@ using TimelordStatusQuerierType = std::function<TimelordStatus()>;
 
 using LastBlockInfoQuerierType = std::function<BlockInfo()>;
 
-using BlockInfoRangeQuerierType = std::function<std::vector<BlockInfo>(int num_heights)>;
+using BlockInfoRangeQuerierType = std::function<std::vector<BlockInfo>(int num_heights, int skip)>;
+
+using BlockInfoSaverType = std::function<void(BlockInfo const& block_info)>;
 
 using NumHeightsByHoursQuerierType = std::function<int(int pass_hours)>;
 

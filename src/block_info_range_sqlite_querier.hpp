@@ -15,7 +15,7 @@ public:
     {
     }
 
-    std::vector<BlockInfo> operator()(int num_heights) const
+    std::vector<BlockInfo> operator()(int num_heights, int /* skip */) const
     {
         return storage_.QueryBlocksRange(num_heights);
     }

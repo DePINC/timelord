@@ -113,7 +113,7 @@ TEST_F(WebServiceTest, FullTests)
             [](int) {
                 return 0;
             },
-            [](int) -> std::vector<BlockInfo> {
+            [](int, int) -> std::vector<BlockInfo> {
                 return {};
             },
             [](int) -> std::vector<NetspaceData> {

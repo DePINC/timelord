@@ -27,8 +27,6 @@ struct BlockInfo {
     int vdf_iters_req;
 };
 
-using BlockInfoRangeQuerierType = std::function<std::vector<BlockInfo>(int)>;
-
-using BlockInfoSaverType = std::function<void(BlockInfo const& block_info)>;
+// using BlockInfoRangeQuerierType = std::function<std::vector<BlockInfo>(int, int)>;
 
 #endif

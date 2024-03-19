@@ -3,6 +3,8 @@
 
 #include "rpc_client.h"
 
+#include "supply_data.h"
+
 class SupplyRPCQuerier
 {
 public:

@@ -177,7 +177,7 @@ http::message_generator VDFWebService::Handle_API_Summary(http::request<http::st
     }
 
     int num_heights = num_heights_by_hours_querier_(pass_hours);
-    auto blocks = block_info_range_querier_(num_heights);
+    auto blocks = block_info_range_querier_(num_heights, 0);
 
     int segs[] = { 3, 5, 10, 30, 60 };
     std::map<int, int> summary;

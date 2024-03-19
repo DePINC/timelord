@@ -1,8 +1,6 @@
 #ifndef BLOCK_INFO_RANGE_QUERIER_HPP
 #define BLOCK_INFO_RANGE_QUERIER_HPP
 
-#include "common_types.h"
-
 #include "rpc_client.h"
 
 #include "block_querier_utils.h"
@@ -15,9 +13,9 @@ public:
     {
     }
 
-    std::vector<BlockInfo> operator()(int num_heights) const
+    std::vector<BlockInfo> operator()(int num_heights, int skip_num) const
     {
-        auto res = rpc_.Call("queryupdatetiphistory", std::to_string(num_heights));
+        auto res = rpc_.Call("queryupdatetiphistory", std::to_string(num_heights), std::to_string(skip_num));
         if (!res.result.isObject()) {
             throw std::runtime_error("the return value is not an array");
         }
