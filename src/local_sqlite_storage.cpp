@@ -165,28 +165,21 @@ int LocalSQLiteStorage::QueryLastBlockHeight()
 
 int LocalSQLiteStorage::QueryNumHeightsByTimeRange(int pass_hours, int min_height)
 {
-    int begin_height, end_height;
-    uint32_t end_timestamp;
+    int64_t end_timestamp = time(nullptr);
     {
-        auto stmt = sql3_.Prepare("select height, timestamp from vdf_record where height >= ? order by timestamp desc limit 1");
-        stmt.Bind(1, min_height);
-        if (!stmt.StepNext()) {
-            return -1;
+        auto stmt = sql3_.Prepare("select timestamp from blocks order by height desc limit 1");
+        if (stmt.StepNext()) {
+            end_timestamp = stmt.GetColumnInt64(0);
         }
-        end_height = stmt.GetColumnInt64(0);
-        end_timestamp = stmt.GetColumnInt64(1);
     }
-    uint32_t begin_timestamp = end_timestamp - pass_hours * 60 * 60;
-    {
-        auto stmt2 = sql3_.Prepare("select height from vdf_record where timestamp <= ? and height >= ? order by timestamp desc limit 1");
-        stmt2.Bind(1, begin_timestamp);
-        stmt2.Bind(2, min_height);
-        if (!stmt2.StepNext()) {
-            return -1;
-        }
-        begin_height = stmt2.GetColumnInt64(0);
+    int64_t begin_timestamp = end_timestamp - pass_hours * 60 * 60;
+    std::string_view sql = "select count(*) from blocks where timestamp >= ?";
+    auto stmt = sql3_.Prepare(sql);
+    stmt.Bind(1, begin_timestamp);
+    if (!stmt.StepNext()) {
+        return 0;
     }
-    return end_height - begin_height + 1;
+    return stmt.GetColumnInt64(0);
 }
 
 std::vector<NetspaceData> LocalSQLiteStorage::QueryNetspace(int num_heights, bool sum_netspace)
