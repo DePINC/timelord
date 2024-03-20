@@ -10,6 +10,8 @@ namespace urls = boost::urls;
 
 #include "timelord_utils.h"
 
+#include "consuming_timer.h"
+
 #include "ip_addr_querier.hpp"
 
 Json::Value MakeRecordJson(VDFRecord const& record)
@@ -91,7 +93,9 @@ http::message_generator VDFWebService::HandleRequest(http::request<http::string_
 
 http::message_generator VDFWebService::Handle_API_Status(http::request<http::string_body> const& request)
 {
+    ConsumingTimer t3("status_querier");
     auto status = status_querier_();
+    t3.PrintLog();
 
     Json::Value status_value;
     status_value["server_ip"] = status.hostip;
@@ -125,7 +129,9 @@ http::message_generator VDFWebService::Handle_API_Status(http::request<http::str
 
     status_value["vdf_pack"] = MakePackJson(status.vdf_pack);
 
+    ConsumingTimer t("supply_querier");
     Supply supply = supply_querier_();
+    t.PrintLog();
 
     Json::Value supply_json;
     supply_json["dist_height"] = supply.dist_height;
@@ -145,7 +151,10 @@ http::message_generator VDFWebService::Handle_API_Status(http::request<http::str
     supply_json["last"] = last_json;
     status_value["supply"] = supply_json;
 
+    ConsumingTimer t2("pledge_querier");
     PledgeInfo pledge_info = pledge_info_querier_();
+    t2.PrintLog();
+
     Json::Value pledge_info_json;
     pledge_info_json["retarget_min_heights"] = pledge_info.retarget_min_heights;
     pledge_info_json["capacity_eval_window"] = pledge_info.capacity_eval_window;
