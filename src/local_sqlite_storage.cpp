@@ -221,7 +221,7 @@ std::vector<RankRecord> LocalSQLiteStorage::QueryRank(int from_height, int count
 
 uint64_t LocalSQLiteStorage::QueryMaxNetspace(int from_height, int best_height)
 {
-    char const* SZ_QUERY_NETSPACE_MAX_SUM_NETSPACE = "select sum(vdf_size) as s from blocks where height >= ? and height < ? order by s desc limit 1";
+    char const* SZ_QUERY_NETSPACE_MAX_SUM_NETSPACE = "select max(vdf_size) from blocks where height >= ? and height < ?";
     auto stmt = sql3_.Prepare(SZ_QUERY_NETSPACE_MAX_SUM_NETSPACE);
     stmt.Bind(1, from_height);
     stmt.Bind(2, best_height);
