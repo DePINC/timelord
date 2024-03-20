@@ -75,6 +75,8 @@ private:
 
     std::tuple<uint64_t, bool> AddAndSumNetspace(uint256 const& group_hash, uint64_t total_size);
 
+    uint64_t CountNetSpace() const;
+
     asio::io_context& ioc_;
     LocalSQLiteDatabaseKeeper& persist_operator_;
     BlockInfoRangeQuerierType block_info_querier_;

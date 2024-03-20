@@ -197,11 +197,12 @@ void Timelord::HandleChallengeMonitor_NewChallenge(uint256 const& old_challenge,
     // we should query last new block info. and save it to local database
     auto new_blocks = block_info_querier_(1, 0);
     if (!new_blocks.empty()) {
-        auto const& block_info = new_blocks.front();
+        auto block_info = new_blocks.front();
         // check the block height before we save it
         if (block_info.height == height - 1 && height - 1 >= fork_height_) {
-            // ok, we got a record
+            // ok, we'v got a record
             try {
+                block_info.vdf_size = CountNetSpace(); // patch the netspace
                 block_info_saver_(block_info);
                 PLOGI << tinyformat::format("saved block height=%d into local db", block_info.height);
             } catch (std::exception const& e) {
@@ -396,9 +397,14 @@ std::tuple<uint64_t, bool> Timelord::AddAndSumNetspace(uint256 const& group_hash
         netspace_.insert(std::make_pair(group_hash, total_size));
     }
     // count the size every time the netspace is sent
+    return std::make_tuple(CountNetSpace(), newly);
+}
+
+uint64_t Timelord::CountNetSpace() const
+{
     uint64_t sum_size { 0 };
     for (auto pa : netspace_) {
         sum_size += pa.second;
     }
-    return std::make_tuple(sum_size, newly);
+    return sum_size;
 }

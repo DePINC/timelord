@@ -2,10 +2,6 @@
 
 #include <tinyformat.h>
 
-#include <memory>
-
-#include "sqlite_utils.h"
-
 #include "sqlite_stmt_wrap.h"
 
 #include "block_info.h"
@@ -65,7 +61,7 @@ void LocalSQLiteStorage::AppendRequest(VDFRequest const& request)
 
 void LocalSQLiteStorage::AppendBlock(BlockInfo const& block_info)
 {
-    auto stmt = sql3_.Prepare("insert into blocks (hash, timestamp, challenge, height, filter_bits, block_difficulty, challenge_difficulty, farmer_pk, address, reward, accumulate, vdf_time, vdf_iters, vdf_speed) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    auto stmt = sql3_.Prepare("insert into blocks (hash, timestamp, challenge, height, filter_bits, block_difficulty, challenge_difficulty, farmer_pk, address, reward, accumulate, vdf_time, vdf_iters, vdf_speed, vdf_size) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
     stmt.Bind(1, block_info.hash);
     stmt.Bind(2, block_info.timestamp);
     stmt.Bind(3, block_info.challenge);
@@ -80,6 +76,7 @@ void LocalSQLiteStorage::AppendBlock(BlockInfo const& block_info)
     stmt.Bind(12, block_info.vdf_time);
     stmt.Bind(13, block_info.vdf_iters);
     stmt.Bind(14, block_info.vdf_speed);
+    stmt.Bind(15, block_info.vdf_size);
     stmt.Run();
 }
 
@@ -133,7 +130,7 @@ std::vector<VDFRequest> LocalSQLiteStorage::QueryRequests(uint256 const& challen
 std::vector<BlockInfo> LocalSQLiteStorage::QueryBlocksRange(int num_heights)
 {
     std::vector<BlockInfo> blocks;
-    auto stmt = sql3_.Prepare("select hash, timestamp, challenge, height, filter_bits, block_difficulty, challenge_difficulty, farmer_pk, address, reward, accumulate, vdf_time, vdf_iters, vdf_speed from blocks order by height desc limit ?");
+    auto stmt = sql3_.Prepare("select hash, timestamp, challenge, height, filter_bits, block_difficulty, challenge_difficulty, farmer_pk, address, reward, accumulate, vdf_time, vdf_iters, vdf_speed, vdf_size from blocks order by height desc limit ?");
     stmt.Bind(1, num_heights);
     while (stmt.StepNext()) {
         BlockInfo block_info;
@@ -151,6 +148,7 @@ std::vector<BlockInfo> LocalSQLiteStorage::QueryBlocksRange(int num_heights)
         block_info.vdf_time = stmt.GetColumnString(11);
         block_info.vdf_iters = stmt.GetColumnInt64(12);
         block_info.vdf_speed = stmt.GetColumnInt64(13);
+        block_info.vdf_size = stmt.GetColumnInt64(14);
         blocks.push_back(std::move(block_info));
     }
     return blocks;
@@ -194,8 +192,8 @@ int LocalSQLiteStorage::QueryNumHeightsByTimeRange(int pass_hours, int min_heigh
 std::vector<NetspaceData> LocalSQLiteStorage::QueryNetspace(int num_heights, bool sum_netspace)
 {
     std::vector<NetspaceData> results;
-    char const* SZ_QUERY_NETSPACE_SUM_NETSPACE = "select blocks.height, blocks.challenge_difficulty, blocks.block_difficulty, sum(vdf_requests.total_size) from blocks left join vdf_requests on vdf_requests.challenge = blocks.challenge group by blocks.challenge order by blocks.height desc limit ?";
-    char const* SZ_QUERY_NETSPACE = "select height, challenge_difficulty, block_difficulty, 0 from blocks order by height desc limit ?";
+    char const* SZ_QUERY_NETSPACE_SUM_NETSPACE = "select height, challenge_difficulty, block_difficulty, vdf_size from blocks order by height desc limit ?";
+    char const* SZ_QUERY_NETSPACE = "select height, challenge_difficulty, block_difficulty, vdf_size from blocks order by height desc limit ?";
     std::string sql_str = sum_netspace ? SZ_QUERY_NETSPACE_SUM_NETSPACE : SZ_QUERY_NETSPACE;
     auto stmt = sql3_.Prepare(sql_str);
     stmt.Bind(1, num_heights);
@@ -230,7 +228,7 @@ std::vector<RankRecord> LocalSQLiteStorage::QueryRank(int from_height, int count
 
 uint64_t LocalSQLiteStorage::QueryMaxNetspace(int from_height, int best_height)
 {
-    char const* SZ_QUERY_NETSPACE_MAX_SUM_NETSPACE = "select sum(vdf_requests.total_size) as s from blocks left join vdf_requests on vdf_requests.challenge = blocks.challenge where blocks.height >= ? and blocks.height < ? group by blocks.challenge order by s desc limit 1";
+    char const* SZ_QUERY_NETSPACE_MAX_SUM_NETSPACE = "select sum(vdf_size) as s from blocks where height >= ? and height < ? order by s desc limit 1";
     auto stmt = sql3_.Prepare(SZ_QUERY_NETSPACE_MAX_SUM_NETSPACE);
     stmt.Bind(1, from_height);
     stmt.Bind(2, best_height);
