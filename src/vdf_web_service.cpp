@@ -185,9 +185,15 @@ http::message_generator VDFWebService::Handle_API_Summary(http::request<http::st
         return PrepareResponseWithError(http::status::bad_request, "the value of `hours` is invalid", request.version(), request.keep_alive());
     }
 
+    ConsumingTimer t0("query_num_heights_by_hours");
     int num_heights = num_heights_by_hours_querier_(pass_hours);
-    auto blocks = block_info_range_querier_(num_heights, 0);
+    t0.PrintLog();
 
+    ConsumingTimer t1("query_block_in_range");
+    auto blocks = block_info_range_querier_(num_heights, 0);
+    t1.PrintLog();
+
+    ConsumingTimer t2("calc_summary");
     int segs[] = { 3, 5, 10, 30, 60 };
     std::map<int, int> summary;
     for (int seg : segs) {
@@ -208,6 +214,7 @@ http::message_generator VDFWebService::Handle_API_Summary(http::request<http::st
             }
         }
     }
+    t2.PrintLog();
 
     Json::Value res_json;
     res_json["num_blocks"] = static_cast<Json::Int64>(blocks.size());
