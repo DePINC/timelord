@@ -31,7 +31,13 @@ std::tuple<uint64_t, uint64_t> AnalyzeVdfInfo(std::string_view vdf_str)
 
 std::time_t TimeStrToTimeStamp(std::string const& time_str)
 {
-    std::istringstream iss(time_str);
+    std::string str;
+    if (time_str.back() >= '0' && time_str.back() <= '0') {
+        str = std::string(std::begin(time_str), std::end(time_str));
+    } else {
+        str = std::string(std::begin(time_str), std::end(time_str) - 1);
+    }
+    std::istringstream iss(str);
     tm t;
     iss >> std::get_time(&t, "%Y-%m-%dT%H:%M:%S");
     if (iss.fail()) {
