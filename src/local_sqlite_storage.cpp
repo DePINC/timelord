@@ -25,6 +25,13 @@ LocalSQLiteStorage::LocalSQLiteStorage(std::string_view file_path)
     sql3_.ExecuteSQL("create index if not exists blocks_challenge on blocks (challenge)");
     sql3_.ExecuteSQL("create index if not exists blocks_height on blocks (height)");
     sql3_.ExecuteSQL("create index if not exists blocks_address on blocks (address)");
+
+    try {
+        sql3_.ExecuteSQL("alter table blocks add vdf_size");
+    } catch (std::exception&) {
+    }
+
+    sql3_.ExecuteSQL("create index if not exists blocks_vdf_size on blocks (vdf_size)");
 }
 
 void LocalSQLiteStorage::Save(VDFRecordPack const& pack)
