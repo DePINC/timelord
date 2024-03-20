@@ -1,6 +1,7 @@
 #include "block_querier_utils.h"
 
 #include <regex>
+#include <iomanip>
 
 #include "timelord_utils.h"
 
@@ -28,6 +29,17 @@ std::tuple<uint64_t, uint64_t> AnalyzeVdfInfo(std::string_view vdf_str)
     return std::make_tuple(0, 0);
 }
 
+std::time_t TimeStrToTimeStamp(std::string const& time_str)
+{
+    std::istringstream iss(time_str);
+    tm t;
+    iss >> std::get_time(&t, "%Y-%m-%dT%H:%M:%S");
+    if (iss.fail()) {
+        throw std::runtime_error("cannot get timestamp from string");
+    }
+    return std::mktime(&t);
+}
+
 BlockInfo ConvertToBlockInfo(UniValue const& block_json)
 {
     BlockInfo block_info;
@@ -40,6 +52,9 @@ BlockInfo ConvertToBlockInfo(UniValue const& block_json)
         block_info.filter_bits = StrToInt(block_json["filter-bit"].get_str());
     } else {
         block_info.filter_bits = 0;
+    }
+    if (block_json.exists("date")) {
+        block_info.timestamp = TimeStrToTimeStamp(block_json["date"].get_str());
     }
     if (block_json.exists("block-difficulty")) {
         block_info.block_difficulty = StrToInt(block_json["block-difficulty"].get_str());
