@@ -18,7 +18,6 @@
 
 #include "vdf_computer.h"
 #include "vdf_types.h"
-#include "vdf_utils.h"
 
 #include "timelord_utils.h"
 #include "utils.h"
@@ -147,7 +146,7 @@ Bytes MakeChallengeBuf(uint256 const& challenge)
 {
     auto disc = vdf::utils::CreateDiscriminant(MakeBytes(challenge));
     std::string disc_str = disc.FormatString();
-    int disc_size = disc_str.size();
+    int disc_size = static_cast<int>(disc_str.size());
     std::string disc_size_str = std::to_string(disc_size);
     assert(disc_size_str.size() <= 3);
     std::size_t size = disc_str.size() + 3;
@@ -490,7 +489,7 @@ void VdfClientSession::ExecuteCommand(Command const& cmd)
         detail.proof = proof.proof;
         detail.witness_type = proof.witness_type;
         detail.iters = iters;
-        detail.duration = GetCurrDuration();
+        detail.duration = static_cast<int>(GetCurrDuration());
         proof_receiver_(challenge_, detail);
     }
 }
@@ -701,7 +700,7 @@ void VdfClientMan::AcceptNext()
 
 void VdfClientMan::ShowTheBest(uint256 const& challenge, uint64_t best_iters, uint64_t curr_iters, int answers_count)
 {
-    PLOGI << tinyformat::format("next block %s, curr %s, count %d, challenge=%s", FormatTime(best_iters / vdf_speed_), FormatTime(curr_iters / vdf_speed_), answers_count, Uint256ToHex(challenge));
+    PLOGI << tinyformat::format("next block %s, curr %s, count %d, challenge=%s", FormatTime(static_cast<int>(best_iters / vdf_speed_)), FormatTime(static_cast<int>(curr_iters / vdf_speed_)), answers_count, Uint256ToHex(challenge));
 }
 
 } // namespace vdf_client

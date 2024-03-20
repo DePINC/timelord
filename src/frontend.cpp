@@ -206,7 +206,7 @@ void FrontEnd::DoAcceptNext()
             auto it = std::find(std::begin(session_vec_), std::end(session_vec_), psession);
             if (it != std::end(session_vec_)) {
                 session_vec_.erase(it);
-                num_of_sessions_ = session_vec_.size();
+                num_of_sessions_ = static_cast<int>(session_vec_.size());
             }
             // report to supervisor
             if (err_handler_) {
@@ -216,7 +216,7 @@ void FrontEnd::DoAcceptNext()
         psession->SetMessageHandler(msg_handler_);
         psession->Start();
         session_vec_.push_back(psession);
-        num_of_sessions_ = session_vec_.size();
+        num_of_sessions_ = static_cast<int>(session_vec_.size());
         conn_handler_(psession);
         DoAcceptNext();
     });

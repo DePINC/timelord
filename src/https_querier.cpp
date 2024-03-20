@@ -1,6 +1,10 @@
 #include "https_querier.h"
 
 #include <boost/asio/ssl.hpp>
+
+#include <boost/beast.hpp>
+namespace beast = boost::beast;
+
 #include <boost/beast/ssl.hpp>
 
 #include "root_certificates.hpp"

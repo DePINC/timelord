@@ -4,7 +4,7 @@
 #include <regex>
 #include <algorithm>
 
-char Byte4bToHexChar(uint8_t hex) { return hex_chars[hex]; }
+char Byte4bToHexChar(uint8_t hex) { return hex_chars.at(hex); }
 
 std::string ByteToHex(uint8_t byte) {
     std::string hex(2, '0');

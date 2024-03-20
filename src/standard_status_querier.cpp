@@ -35,7 +35,7 @@ TimelordStatus StandardStatusQuerier::operator()() const
         status.challenge = timelord_status.challenge;
         status.difficulty = timelord_status.difficulty;
         status.height = timelord_status.height;
-        status.iters_per_sec = timelord_status.iters_per_sec;
+        status.iters_per_sec = static_cast<int>(timelord_status.iters_per_sec);
         status.total_size = timelord_status.total_size;
         ConsumingTimer t2("netmaxq");
         status.max_size = netspace_max_querier_(0, status.height);

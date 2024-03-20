@@ -10,6 +10,12 @@
 
 class HTTPClient {
 public:
+    HTTPClient(HTTPClient const&) = delete;
+    HTTPClient& operator=(HTTPClient const&) = delete;
+
+    HTTPClient(HTTPClient&&) = delete;
+    HTTPClient& operator=(HTTPClient&&) = delete;
+
     HTTPClient(std::string url, std::string user, std::string passwd, bool no_proxy);
 
     ~HTTPClient();

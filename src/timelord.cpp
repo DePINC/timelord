@@ -13,10 +13,12 @@ using boost::system::error_code;
 #include "msg_ids.h"
 #include "timelord_utils.h"
 
+namespace {
 using std::placeholders::_1;
 using std::placeholders::_2;
 using std::placeholders::_3;
 using std::placeholders::_4;
+}
 
 static int const SECS_TO_WAIT_BEFORE_CLOSE_VDF = 5;
 
@@ -140,7 +142,7 @@ Timelord::Status Timelord::QueryStatus() const
     status.difficulty = difficulty_;
     status.height = height_;
     status.iters_per_sec = iters_per_sec_;
-    status.num_connections = frontend_.GetNumOfSessions();
+    status.num_connections = static_cast<int>(frontend_.GetNumOfSessions());
     if (challenge_monitor_.GetStatus() == ChallengeMonitor::Status::NO_ERROR) {
         status.status_string = "good";
     } else if (challenge_monitor_.GetStatus() == ChallengeMonitor::Status::RPC_ERROR) {
@@ -181,7 +183,7 @@ void Timelord::HandleChallengeMonitor_NewChallenge(uint256 const& old_challenge,
     ptimer_wait_close_vdf_set_.insert(std::move(ptimer));
 
     // the challenge must be calculated as soon as possible
-    vdf_client_man_.CalcIters(new_challenge, 100000 * 60 * 60);
+    vdf_client_man_.CalcIters(new_challenge, static_cast<uint64_t>(100000) * 60 * 60);
 
     // append new record to local database for the incoming block
     if (height >= fork_height_) {

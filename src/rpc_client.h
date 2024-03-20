@@ -10,9 +10,6 @@
 #include <string>
 #include <string_view>
 
-#include <type_traits>
-
-#include "http_client.h"
 #include "rpc_login.hpp"
 
 #include "utils.h"

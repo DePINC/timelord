@@ -3,10 +3,6 @@
 
 #include <string_view>
 
-#include <vector>
-
-#include "block_info.h"
-
 #include "querier_defs.h"
 
 #include "web_req_handler.h"

@@ -2,6 +2,8 @@
 
 #include <tinyformat.h>
 
+#include <plog/Log.h>
+
 #include "sqlite_stmt_wrap.h"
 
 #include "block_info.h"
@@ -24,7 +26,8 @@ LocalSQLiteStorage::LocalSQLiteStorage(std::string_view file_path)
 
     try {
         sql3_.ExecuteSQL("alter table blocks add vdf_size");
-    } catch (std::exception&) {
+    } catch (std::exception& e) {
+        LOGD << tinyformat::format("%s: vdf_size does already exist, ignore error: %s", __func__, e.what());
     }
 
     sql3_.ExecuteSQL("create index if not exists blocks_vdf_size on blocks (vdf_size)");
@@ -137,17 +140,17 @@ std::vector<BlockInfo> LocalSQLiteStorage::QueryBlocksRange(int num_heights)
         block_info.hash = stmt.GetColumnUint256(0);
         block_info.timestamp = stmt.GetColumnInt64(1);
         block_info.challenge = stmt.GetColumnUint256(2);
-        block_info.height = stmt.GetColumnInt64(3);
-        block_info.filter_bits = stmt.GetColumnInt64(4);
+        block_info.height = static_cast<int>(stmt.GetColumnInt64(3));
+        block_info.filter_bits = static_cast<int>(stmt.GetColumnInt64(4));
         block_info.block_difficulty = stmt.GetColumnInt64(5);
         block_info.challenge_difficulty = stmt.GetColumnInt64(6);
         block_info.farmer_pk = stmt.GetColumnBytes(7);
         block_info.address = stmt.GetColumnString(8);
         block_info.reward = stmt.GetColumnReal(9);
-        block_info.accumulate = stmt.GetColumnReal(10);
+        block_info.accumulate = static_cast<int>(stmt.GetColumnReal(10));
         block_info.vdf_time = stmt.GetColumnString(11);
-        block_info.vdf_iters = stmt.GetColumnInt64(12);
-        block_info.vdf_speed = stmt.GetColumnInt64(13);
+        block_info.vdf_iters = static_cast<int>(stmt.GetColumnInt64(12));
+        block_info.vdf_speed = static_cast<int>(stmt.GetColumnInt64(13));
         block_info.vdf_size = stmt.GetColumnInt64(14);
         blocks.push_back(std::move(block_info));
     }
@@ -158,7 +161,7 @@ int LocalSQLiteStorage::QueryLastBlockHeight()
 {
     auto stmt = sql3_.Prepare("select height from blocks order by height desc limit 1");
     if (stmt.StepNext()) {
-        return stmt.GetColumnInt64(0);
+        return static_cast<int>(stmt.GetColumnInt64(0));
     }
     return -1; // cannot find any record from table `block`
 }
@@ -172,14 +175,14 @@ int LocalSQLiteStorage::QueryNumHeightsByTimeRange(int pass_hours, int min_heigh
             end_timestamp = stmt.GetColumnInt64(0);
         }
     }
-    int64_t begin_timestamp = end_timestamp - pass_hours * 60 * 60;
+    int64_t begin_timestamp = end_timestamp - static_cast<int64_t>(pass_hours) * 60 * 60;
     std::string_view sql = "select count(*) from blocks where timestamp >= ?";
     auto stmt = sql3_.Prepare(sql);
     stmt.Bind(1, begin_timestamp);
     if (!stmt.StepNext()) {
         return 0;
     }
-    return stmt.GetColumnInt64(0);
+    return static_cast<int>(stmt.GetColumnInt64(0));
 }
 
 std::vector<NetspaceData> LocalSQLiteStorage::QueryNetspace(int num_heights, bool sum_netspace)
@@ -192,7 +195,7 @@ std::vector<NetspaceData> LocalSQLiteStorage::QueryNetspace(int num_heights, boo
     stmt.Bind(1, num_heights);
     while (stmt.StepNext()) {
         NetspaceData data;
-        data.height = stmt.GetColumnInt64(0);
+        data.height = static_cast<int>(stmt.GetColumnInt64(0));
         data.challenge_difficulty = stmt.GetColumnInt64(1);
         data.block_difficulty = stmt.GetColumnInt64(2);
         data.netspace = stmt.GetColumnInt64(3);
@@ -211,7 +214,7 @@ std::vector<RankRecord> LocalSQLiteStorage::QueryRank(int from_height, int count
         RankRecord rank;
         rank.farmer_pk = stmt.GetColumnString(0);
         rank.total_reward = stmt.GetColumnInt64(1);
-        rank.produced_blocks = stmt.GetColumnInt64(2);
+        rank.produced_blocks = static_cast<int>(stmt.GetColumnInt64(2));
         rank.participated_blocks = 0;
         rank.average_difficulty = stmt.GetColumnInt64(3);
         res.push_back(std::move(rank));

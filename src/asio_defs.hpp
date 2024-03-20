@@ -6,4 +6,7 @@ namespace asio = boost::asio;
 using asio::ip::tcp;
 using boost::system::error_code;
 
+#include <boost/beast.hpp>
+namespace http = boost::beast::http;
+
 #endif

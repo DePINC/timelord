@@ -3,7 +3,10 @@
 #include <json/json.h>
 
 #include <functional>
+
+namespace {
 using std::placeholders::_1;
+}
 
 #include <boost/url.hpp>
 namespace urls = boost::urls;
@@ -11,8 +14,6 @@ namespace urls = boost::urls;
 #include "timelord_utils.h"
 
 #include "consuming_timer.h"
-
-#include "ip_addr_querier.hpp"
 
 Json::Value MakeRecordJson(VDFRecord const& record)
 {
@@ -160,7 +161,7 @@ http::message_generator VDFWebService::Handle_API_Status(http::request<http::str
     pledge_info_json["capacity_eval_window"] = pledge_info.capacity_eval_window;
     Json::Value pledges_json(Json::arrayValue);
     for (int i = 0; i < pledge_info.pledges.size(); ++i) {
-        auto const& pledge = pledge_info.pledges[i];
+        auto const& pledge = pledge_info.pledges.at(i);
         Json::Value pledge_json;
         pledge_json["lock_height"] = pledge.lock_height;
         pledge_json["actual_percent"] = pledge.actual_percent;
@@ -237,7 +238,7 @@ http::message_generator VDFWebService::Handle_API_Summary(http::request<http::st
 
 template <typename T, typename OriginalValueQuerierType> T CalcSimValue(int index, int query_n, OriginalValueQuerierType original_val_querier, int original_n)
 {
-    int original_index = (static_cast<double>(index) / query_n) * original_n;
+    int original_index = static_cast<int>((static_cast<double>(index) / query_n) * original_n);
     int n = std::max(original_n / query_n, 1);
     T total { 0 }, count { 0 };
     for (int i = 0; i < n; ++i) {
@@ -275,25 +276,25 @@ http::message_generator VDFWebService::Handle_API_Netspace(http::request<http::s
                 [&data](int original_index) {
                     return data[original_index].height;
                 },
-                data.size());
+                static_cast<int>(data.size()));
         data_val["challenge_difficulty"] = CalcSimValue<uint64_t>(
                 i, DATA_N,
                 [&data](int original_index) {
                     return data[original_index].challenge_difficulty;
                 },
-                data.size());
+                static_cast<int>(data.size()));
         data_val["block_difficulty"] = CalcSimValue<uint64_t>(
                 i, DATA_N,
                 [&data](int original_index) {
                     return data[original_index].block_difficulty;
                 },
-                data.size());
+                static_cast<int>(data.size()));
         data_val["netspace"] = CalcSimValue<uint64_t>(
                 i, DATA_N,
                 [&data](int original_index) {
                     return data[original_index].netspace;
                 },
-                data.size());
+                static_cast<int>(data.size()));
         res_json.append(std::move(data_val));
     }
 

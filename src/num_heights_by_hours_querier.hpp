@@ -1,9 +1,6 @@
 #ifndef NUM_HEIGHTS_BY_HOURS_QUERIER_HPP
 #define NUM_HEIGHTS_BY_HOURS_QUERIER_HPP
 
-#include <cstdint>
-#include <cstdlib>
-
 #include "local_sqlite_storage.h"
 
 class NumHeightsByHoursQuerier

@@ -70,7 +70,7 @@ void HTTPClient::AppendRecvData(char const* ptr, size_t total)
 
 size_t HTTPClient::RecvCallback(char* ptr, size_t size, size_t nmemb, void* userdata)
 {
-    HTTPClient* client = reinterpret_cast<HTTPClient*>(userdata);
+    HTTPClient* client = static_cast<HTTPClient*>(userdata);
 
     size_t total = size * nmemb;
     client->AppendRecvData(ptr, total);
@@ -79,7 +79,7 @@ size_t HTTPClient::RecvCallback(char* ptr, size_t size, size_t nmemb, void* user
 
 size_t HTTPClient::SendCallback(char* buffer, size_t size, size_t nitems, void* userdata)
 {
-    HTTPClient* client = reinterpret_cast<HTTPClient*>(userdata);
+    HTTPClient* client = static_cast<HTTPClient*>(userdata);
 
     size_t bytes_to_copy = std::min(size * nitems, client->m_send_data.size() - client->m_send_data_offset);
     memcpy(buffer, client->m_send_data.data() + client->m_send_data_offset, bytes_to_copy);

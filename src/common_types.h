@@ -5,7 +5,6 @@
 
 #include <array>
 #include <vector>
-#include <string>
 
 using Bytes = std::vector<uint8_t>;
 using uint256 = std::array<uint8_t, 256 / 8>;

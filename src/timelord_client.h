@@ -3,8 +3,6 @@
 
 #include <functional>
 
-#include "asio_defs.hpp"
-
 #include <json/value.h>
 
 #include "frontend_client.h"

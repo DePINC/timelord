@@ -1,8 +1,6 @@
 #ifndef TL_TEST_UTILS_H
 #define TL_TEST_UTILS_H
 
-#include "timelord_utils.h"
-
 #include "vdf_record.h"
 
 bool IsFlag(char const* sz_argv, char const* flag_name);

@@ -35,14 +35,14 @@ public:
         supply.dist_height = res.result["dist_height"].get_int();
 
         supply.calc.height = calcObj["calc_height"].get_int();
-        supply.calc.burned = calcObj["burned"].get_real();
-        supply.calc.total = calcObj["total_supplied"].get_real();
-        supply.calc.actual = calcObj["actual_supplied"].get_real();
+        supply.calc.burned = static_cast<uint64_t>(calcObj["burned"].get_real());
+        supply.calc.total = static_cast<uint64_t>(calcObj["total_supplied"].get_real());
+        supply.calc.actual = static_cast<uint64_t>(calcObj["actual_supplied"].get_real());
 
         supply.last.height = lastObj["last_height"].get_int();
-        supply.last.burned = lastObj["burned"].get_real();
-        supply.last.total = lastObj["total_supplied"].get_real();
-        supply.last.actual = lastObj["actual_supplied"].get_real();
+        supply.last.burned = static_cast<uint64_t>(lastObj["burned"].get_real());
+        supply.last.total = static_cast<uint64_t>(lastObj["total_supplied"].get_real());
+        supply.last.actual = static_cast<uint64_t>(lastObj["actual_supplied"].get_real());
 
         return supply;
     }

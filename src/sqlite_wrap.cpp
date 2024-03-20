@@ -3,8 +3,6 @@
 #include <sqlite3.h>
 #include <tinyformat.h>
 
-#include <memory>
-
 #include <filesystem>
 namespace fs = std::filesystem;
 
@@ -37,13 +35,13 @@ SQLite::~SQLite()
     }
 }
 
-SQLite::SQLite(SQLite&& rhs)
+SQLite::SQLite(SQLite&& rhs) noexcept
+    : sql3_(rhs.sql3_)
 {
-    sql3_ = rhs.sql3_;
     rhs.sql3_ = nullptr;
 }
 
-SQLite& SQLite::operator=(SQLite&& rhs)
+SQLite& SQLite::operator=(SQLite&& rhs) noexcept
 {
     if (&rhs != this) {
         sql3_ = rhs.sql3_;

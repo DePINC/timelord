@@ -9,15 +9,16 @@
 
 #include <plog/Log.h>
 
+namespace {
 using std::placeholders::_1;
 using std::placeholders::_2;
+}
 
 #include "frontend.h"
 #include "frontend_client.h"
 
 #include "msg_ids.h"
 
-#include "test_utils.h"
 #include "timelord_utils.h"
 
 char const* SZ_LOCAL_ADDR = "127.0.0.1";

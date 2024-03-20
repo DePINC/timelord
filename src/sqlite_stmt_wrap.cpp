@@ -26,13 +26,13 @@ void SQLiteStmt::Close()
     }
 }
 
-SQLiteStmt::SQLiteStmt(SQLiteStmt&& rhs)
+SQLiteStmt::SQLiteStmt(SQLiteStmt&& rhs) noexcept
+    : stmt_(rhs.stmt_)
 {
-    stmt_ = rhs.stmt_;
     rhs.stmt_ = nullptr;
 }
 
-SQLiteStmt& SQLiteStmt::operator=(SQLiteStmt&& rhs)
+SQLiteStmt& SQLiteStmt::operator=(SQLiteStmt&& rhs) noexcept
 {
     if (&rhs != this) {
         stmt_ = rhs.stmt_;
@@ -43,7 +43,7 @@ SQLiteStmt& SQLiteStmt::operator=(SQLiteStmt&& rhs)
 
 void SQLiteStmt::Bind(int index, std::string_view str)
 {
-    CheckSQL(sql3_, sqlite3_bind_text(stmt_, index, str.data(), str.size(), SQLITE_TRANSIENT));
+    CheckSQL(sql3_, sqlite3_bind_text(stmt_, index, str.data(), static_cast<int>(str.size()), SQLITE_TRANSIENT));
 }
 
 void SQLiteStmt::Bind(int index, uint256 const& val)

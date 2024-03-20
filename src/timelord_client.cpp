@@ -4,8 +4,10 @@
 
 #include "timelord_utils.h"
 
+namespace {
 using std::placeholders::_1;
 using std::placeholders::_2;
+}
 
 TimelordClient::TimelordClient(asio::io_context& ioc)
     : ioc_(ioc)

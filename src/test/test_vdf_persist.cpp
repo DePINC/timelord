@@ -1,7 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <cstdlib>
-
 #include <filesystem>
 namespace fs = std::filesystem;
 

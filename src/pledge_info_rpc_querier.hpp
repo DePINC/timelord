@@ -27,7 +27,7 @@ public:
             PledgeItem pledge;
             pledge.lock_height = term_json["lock_height"].get_int();
             pledge.actual_percent = term_json["actual_percent"].get_int();
-            pledge_info.pledges[i++] = pledge;
+            pledge_info.pledges.at(i++) = pledge;
         }
         return pledge_info;
     }

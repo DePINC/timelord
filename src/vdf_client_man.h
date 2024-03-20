@@ -131,6 +131,12 @@ public:
         return "UNKNOWN";
     }
 
+    VdfClientSession(VdfClientSession const&) = delete;
+    VdfClientSession& operator=(VdfClientSession const&) = delete;
+
+    VdfClientSession(VdfClientSession&&) = delete;
+    VdfClientSession& operator=(VdfClientSession&&) = delete;
+
     VdfClientSession(tcp::socket&& s, uint256 challenge, TimeType time_type, CommandAnalyzer cmd_analyzer);
 
     ~VdfClientSession();

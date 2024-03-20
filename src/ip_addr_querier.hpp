@@ -5,8 +5,6 @@
 
 #include <regex>
 
-#include "asio_defs.hpp"
-
 #include "https_querier.h"
 
 class IpAddrQuerier

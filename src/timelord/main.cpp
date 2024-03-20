@@ -69,7 +69,7 @@ int main(int argc, char* argv[])
     }
 
     std::string logfile = ExpandEnvPath(parse_result["logfile"].as<std::string>());
-    plog::RollingFileAppender<plog::TxtFormatter> rollingfile_appender(logfile.c_str(), 1024 * 1024 * 10, 10);
+    plog::RollingFileAppender<plog::TxtFormatter> rollingfile_appender(logfile.c_str(), static_cast<int>(1024 * 1024 * 10), 10);
 
     bool verbose = parse_result.count("verbose") > 0;
     plog::ColorConsoleAppender<plog::TxtFormatter> console_appender;

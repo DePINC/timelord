@@ -5,7 +5,6 @@
 #include <string_view>
 
 #include <deque>
-#include <map>
 
 #include <functional>
 
@@ -26,6 +25,12 @@ public:
     using ConnectionHandler = std::function<void(FrontEndSessionPtr psession)>;
     using MessageHandler = std::function<void(FrontEndSessionPtr psession, Json::Value const& msg)>;
     using ErrorHandler = std::function<void(FrontEndSessionPtr psession, FrontEndSessionErrorType type, std::string_view errs)>;
+
+    FrontEndSession(FrontEndSession const&) = delete;
+    FrontEndSession& operator=(FrontEndSession const&) = delete;
+
+    FrontEndSession(FrontEndSession&&) = delete;
+    FrontEndSession& operator=(FrontEndSession&&) = delete;
 
     FrontEndSession(asio::io_context& ioc, tcp::socket&& s);
 

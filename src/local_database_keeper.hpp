@@ -1,14 +1,6 @@
 #ifndef VDF_PERSIST_DATA_H
 #define VDF_PERSIST_DATA_H
 
-#include <cstdint>
-#include <ctime>
-
-#include <string_view>
-
-#include <tuple>
-#include <vector>
-
 #include "vdf_record.h"
 
 template <typename Storage> class LocalDatabaseKeeper

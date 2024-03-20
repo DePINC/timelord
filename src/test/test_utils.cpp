@@ -5,7 +5,7 @@
 bool IsFlag(char const* sz_argv, char const* flag_name)
 {
     int p { 0 };
-    int n = strlen(sz_argv);
+    int n = static_cast<int>(strlen(sz_argv));
     if (n == 0 || sz_argv[0] != '-') {
         return false;
     }
@@ -32,7 +32,7 @@ uint256 MakeRandomUInt256()
 {
     uint256 res;
     for (int i = 0; i < 256 / 8; ++i) {
-        res[i] = random() % 256;
+        res.at(i) = random() % 256;
     }
     return res;
 }

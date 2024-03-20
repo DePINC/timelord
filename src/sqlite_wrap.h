@@ -20,9 +20,9 @@ public:
 
     SQLite& operator=(SQLite const& rhs) = delete;
 
-    SQLite(SQLite&& rhs);
+    SQLite(SQLite&& rhs) noexcept;
 
-    SQLite& operator=(SQLite&& rhs);
+    SQLite& operator=(SQLite&& rhs) noexcept;
 
     Status GetStatus() const;
 

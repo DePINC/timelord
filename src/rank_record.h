@@ -1,7 +1,6 @@
 #ifndef RANK_RECORD_H
 #define RANK_RECORD_H
 
-#include <vector>
 #include <string>
 
 struct RankRecord {

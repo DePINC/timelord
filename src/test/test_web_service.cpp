@@ -13,6 +13,7 @@ namespace fs = std::filesystem;
 #include "vdf_web_service.h"
 
 #include "test_utils.h"
+#include "timelord_utils.h"
 
 char const* SZ_WEBSERVICE_LOCAL_DBNAME = "webservice_db.sqlite3";
 

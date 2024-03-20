@@ -22,9 +22,9 @@ public:
 
     SQLiteStmt& operator=(SQLiteStmt const& rhs) = delete;
 
-    SQLiteStmt(SQLiteStmt&& rhs);
+    SQLiteStmt(SQLiteStmt&& rhs) noexcept;
 
-    SQLiteStmt& operator=(SQLiteStmt&& rhs);
+    SQLiteStmt& operator=(SQLiteStmt&& rhs) noexcept;
 
     void Bind(int index, std::string_view str_val);
 

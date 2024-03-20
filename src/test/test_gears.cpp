@@ -20,7 +20,7 @@ TEST(Utils, MakeBytes)
 {
     std::array<uint8_t, 16> src;
     for (int i = 0; i < src.size(); ++i) {
-        src[i] = i;
+        src.at(i) = i;
     }
     Bytes dst = MakeBytes(src);
     EXPECT_EQ(BytesToHex(dst), "000102030405060708090a0b0c0d0e0f");
@@ -57,7 +57,7 @@ TEST(MakeArgs, Array)
     int const LEN = 16;
     std::array<uint8_t, LEN> src;
     for (int i = 0; i < src.size(); ++i) {
-        src[i] = i;
+        src.at(i) = i;
     }
     auto arg = MakeArg<LEN>(src);
     EXPECT_TRUE(arg.isStr());

@@ -47,9 +47,9 @@ BlockInfo ConvertToBlockInfo(UniValue const& block_json)
     if (block_json.exists("challenge")) {
         block_info.challenge = Uint256FromHex(block_json["challenge"].get_str());
     }
-    block_info.height = StrToInt(block_json["height"].get_str());
+    block_info.height = static_cast<int>(StrToInt(block_json["height"].get_str()));
     if (block_json.exists("filter-bit")) {
-        block_info.filter_bits = StrToInt(block_json["filter-bit"].get_str());
+        block_info.filter_bits = static_cast<int>(StrToInt(block_json["filter-bit"].get_str()));
     } else {
         block_info.filter_bits = 0;
     }
@@ -76,7 +76,7 @@ BlockInfo ConvertToBlockInfo(UniValue const& block_json)
         block_info.vdf_time = block_json["vdf-time"].get_str();
     }
     if (block_json.exists("vdf-iters-req")) {
-        block_info.vdf_iters_req = StrToInt(block_json["vdf-iters-req"].get_str());
+        block_info.vdf_iters_req = static_cast<int>(StrToInt(block_json["vdf-iters-req"].get_str()));
     }
     // find the first tx and retrieve the reward info
     if (block_json.exists("txs")) {
@@ -87,7 +87,7 @@ BlockInfo ConvertToBlockInfo(UniValue const& block_json)
         auto tx_1_json = txs_json.getValues()[0];
         block_info.address = tx_1_json["address"].get_str();
         block_info.reward = tx_1_json["reward"].get_real();
-        block_info.accumulate = tx_1_json["accumulate"].get_real();
+        block_info.accumulate = static_cast<uint64_t>(tx_1_json["accumulate"].get_real());
     }
     return block_info;
 }

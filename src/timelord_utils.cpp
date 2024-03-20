@@ -28,7 +28,7 @@ template <typename Source, typename Dest> void SwitchByteOrder(Source& src, Dest
 {
     int index { 0 };
     for (auto i = std::crbegin(src); i != std::crend(src); ++i) {
-        dst[index++] = *i;
+        dst.at(index++) = *i;
     }
 }
 
@@ -53,7 +53,7 @@ std::string Uint256ToHex(uint256 const& source)
 
 uint256 Uint256FromHex(std::string const& hex)
 {
-    assert(hex.size() == 256 / 8 * 2);
+    assert(hex.size() == static_cast<uint64_t>(256) / 8 * 2);
     return MakeUint256(BytesFromHex(hex));
 }
 
@@ -69,7 +69,7 @@ Bytes StrToBytes(std::string str)
 uint8_t HexCharToByte4b(char ch)
 {
     if (ch >= 'A' && ch <= 'F') {
-        ch = std::tolower(ch);
+        ch = static_cast<char>(std::tolower(ch));
     }
     if (ch >= '0' && ch <= '9') {
         return ch - '0';
@@ -85,7 +85,7 @@ uint8_t HexCharToByte4b(char ch)
 
 uint8_t ByteFromHex(std::string const& hex, int* consumed)
 {
-    int actual_len = strlen(hex.c_str());
+    int actual_len = static_cast<int>(strlen(hex.c_str()));
     if (actual_len == 0) {
         if (consumed) {
             *consumed = 0;
@@ -136,7 +136,7 @@ Bytes SubBytes(Bytes const& bytes, int start, int count)
 {
     int n;
     if (count == 0) {
-        n = bytes.size() - start;
+        n = static_cast<int>(bytes.size()) - start;
     } else {
         n = count;
     }

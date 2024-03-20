@@ -3,12 +3,11 @@
 #include <memory>
 #include <mutex>
 
-#include "asio_defs.hpp"
-
 #include <plog/Log.h>
 
 #include "challenge_monitor.h"
-#include "test_utils.h"
+
+#include "timelord_utils.h"
 
 static char const* SZ_RPC_URL = "http://127.0.0.1:18732";
 static char const* SZ_COOKIE_PATH = "$HOME/.btchd/testnet3/.cookie";
