@@ -19,7 +19,7 @@ public:
         if (!res.result.isObject()) {
             throw std::runtime_error("require an object but the service didn't return one.");
         }
-        return res.result["netspace_tib"].get_int64();
+        return res.result["netspace_avg_tib"].get_int64();
     }
 
 private:
