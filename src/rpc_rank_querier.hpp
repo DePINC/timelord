@@ -19,7 +19,11 @@ public:
 
     std::tuple<std::vector<RankRecord>, int> operator()(int hours) const
     {
-        auto res = m_rpc->Call("queryblocksummary", hours * 20);
+        if (hours == 0) {
+            hours = 24 * 7;
+        }
+        int heights = hours * 20;
+        auto res = m_rpc->Call("queryblocksummary", std::to_string(heights));
         if (res.result.isNull() || !res.result.isArray()) {
             throw std::runtime_error("The result from rpc service is invalid");
         }
