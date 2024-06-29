@@ -1,10 +1,11 @@
 cmake_minimum_required(VERSION 3.5)
+cmake_policy(SET CMP0077 NEW)
 
 set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake)
 
 project(timelord)
 
-option(BUILD_TIMELORD_TEST "Build and run tests" ON)
+option(BUILD_TEST "Build and run tests" ON)
 
 find_package(Threads REQUIRED)
 find_package(cxxopts CONFIG REQUIRED)
@@ -73,7 +74,7 @@ target_link_libraries(timelord PRIVATE
     univalue
 )
 
-if (BUILD_TIMELORD_TEST)
+if (BUILD_TEST)
     function(MakeTest TEST_TARGET_NAME)
         set(TEST_SRCS
             ${TIMELORDLIB_SRCS}
