@@ -5,7 +5,7 @@ set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/
 
 project(timelord)
 
-option(BUILD_TEST "Build and run tests" ON)
+option(TIMELORD_BUILD_TEST "Build and run tests" OFF)
 
 find_package(Threads REQUIRED)
 find_package(cxxopts CONFIG REQUIRED)
@@ -16,8 +16,6 @@ find_package(CURL CONFIG REQUIRED)
 find_package(unofficial-sqlite3 CONFIG REQUIRED)
 find_package(Boost 1.82.0 REQUIRED COMPONENTS system url)
 find_package(OpenSSL REQUIRED)
-
-set(BUILD_TEST OFF)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -74,7 +72,7 @@ target_link_libraries(timelord PRIVATE
     univalue
 )
 
-if (BUILD_TEST)
+if (TIMELORD_BUILD_TEST)
     function(MakeTest TEST_TARGET_NAME)
         set(TEST_SRCS
             ${TIMELORDLIB_SRCS}
