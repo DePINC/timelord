@@ -7,7 +7,9 @@
         "curl",
         "sqlite3",
         "openssl",
-        "boost",
+        "boost-asio",
+        "boost-beast",
+        "boost-url",
         "gtest"
     ],
     "builtin-baseline": "ab887c562326c686478284d9076d722c1ec4b48c",
