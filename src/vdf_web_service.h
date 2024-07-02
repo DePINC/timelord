@@ -11,7 +11,7 @@
 class VDFWebService
 {
 public:
-    VDFWebService(asio::io_context& ioc, std::string_view addr, uint16_t port, int expired_after_secs, std::string api_path_prefix, int fork_height, NumHeightsByHoursQuerierType num_heights_by_hours_querier, BlockInfoRangeQuerierType block_info_range_querier, NetspaceQuerierType netspace_querier, TimelordStatusQuerierType status_querier, RankQuerierType rank_querier, SupplyQuerierType supply_querier, PledgeInfoQuerierType pledge_info_querier, RecentlyNetspaceSizeQuerierType recently_netspace_querier);
+    VDFWebService(asio::io_context& ioc, std::string_view addr, uint16_t port, int expired_after_secs, std::string api_path_prefix, int fork_height, NumHeightsByHoursQuerierType num_heights_by_hours_querier, BlockInfoRangeQuerierType block_info_range_querier, NetspaceQuerierType netspace_querier, TimelordStatusQuerierType status_querier, RankQuerierType rank_querier, SupplyQuerierType supply_querier, PledgeInfoQuerierType pledge_info_querier, RecentlyNetspaceSizeQuerierType recently_netspace_querier, AccumulatedAmountsQuerierType accumulated_amounts_querier);
 
     void Run();
 
@@ -28,6 +28,8 @@ private:
 
     http::message_generator Handle_API_Rank(http::request<http::string_body> const& request);
 
+    http::message_generator Handle_API_AccumulatedBlocks(http::request<http::string_body> const& request);
+
     WebService web_service_;
     WebReqHandler web_req_handler_;
     int fork_height_;
@@ -39,6 +41,7 @@ private:
     SupplyQuerierType supply_querier_;
     PledgeInfoQuerierType pledge_info_querier_;
     RecentlyNetspaceSizeQuerierType recently_netspace_querier_;
+    AccumulatedAmountsQuerierType accumulated_amounts_querier_;
 };
 
 #endif

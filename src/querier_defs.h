@@ -4,6 +4,7 @@
 #include <functional>
 #include <vector>
 
+#include "accumulated_amounts_querier.hpp"
 #include "block_info.h"
 #include "netspace_data.h"
 #include "pledge_info.h"
@@ -37,5 +38,7 @@ using PledgeInfoQuerierType = std::function<PledgeInfo()>;
 using RecentlyNetspaceSizeQuerierType = std::function<uint64_t()>;
 
 using VDFProofSubmitterType = std::function<void(uint256 const& challenge, Bytes const& y, Bytes const& proof, int witness_type, uint64_t iters, int duration)>;
+
+using AccumulatedAmountsQuerierType = std::function<AccumulatedAmountMap(int, int)>; // start from which height, count number of blocks. From higher block to lower block
 
 #endif

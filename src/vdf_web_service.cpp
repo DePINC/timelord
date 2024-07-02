@@ -4,7 +4,8 @@
 
 #include <functional>
 
-namespace {
+namespace
+{
 using std::placeholders::_1;
 }
 
@@ -59,7 +60,7 @@ std::tuple<std::string, bool> ParseUrlParameter(std::string_view target, std::st
     return std::make_tuple((*it).value, true);
 }
 
-VDFWebService::VDFWebService(asio::io_context& ioc, std::string_view addr, uint16_t port, int expired_after_secs, std::string api_path_prefix, int fork_height, NumHeightsByHoursQuerierType num_heights_by_hours_querier, BlockInfoRangeQuerierType block_info_range_querier, NetspaceQuerierType netspace_querier, TimelordStatusQuerierType status_querier, RankQuerierType rank_querier, SupplyQuerierType supply_querier, PledgeInfoQuerierType pledge_info_querier, RecentlyNetspaceSizeQuerierType recently_netspace_querier)
+VDFWebService::VDFWebService(asio::io_context& ioc, std::string_view addr, uint16_t port, int expired_after_secs, std::string api_path_prefix, int fork_height, NumHeightsByHoursQuerierType num_heights_by_hours_querier, BlockInfoRangeQuerierType block_info_range_querier, NetspaceQuerierType netspace_querier, TimelordStatusQuerierType status_querier, RankQuerierType rank_querier, SupplyQuerierType supply_querier, PledgeInfoQuerierType pledge_info_querier, RecentlyNetspaceSizeQuerierType recently_netspace_querier, AccumulatedAmountsQuerierType accumulated_amounts_querier)
     : web_service_(ioc, tcp::endpoint(asio::ip::address::from_string(std::string(addr)), port), expired_after_secs, std::bind(&VDFWebService::HandleRequest, this, _1))
     , fork_height_(fork_height)
     , num_heights_by_hours_querier_(std::move(num_heights_by_hours_querier))
@@ -70,11 +71,13 @@ VDFWebService::VDFWebService(asio::io_context& ioc, std::string_view addr, uint1
     , supply_querier_(std::move(supply_querier))
     , pledge_info_querier_(std::move(pledge_info_querier))
     , recently_netspace_querier_(std::move(recently_netspace_querier))
+    , accumulated_amounts_querier_(std::move(accumulated_amounts_querier))
 {
     web_req_handler_.Register(std::make_pair(http::verb::get, api_path_prefix + "/api/summary"), std::bind(&VDFWebService::Handle_API_Summary, this, _1));
     web_req_handler_.Register(std::make_pair(http::verb::get, api_path_prefix + "/api/status"), std::bind(&VDFWebService::Handle_API_Status, this, _1));
     web_req_handler_.Register(std::make_pair(http::verb::get, api_path_prefix + "/api/netspace"), std::bind(&VDFWebService::Handle_API_Netspace, this, _1));
     web_req_handler_.Register(std::make_pair(http::verb::get, api_path_prefix + "/api/rank"), std::bind(&VDFWebService::Handle_API_Rank, this, _1));
+    web_req_handler_.Register(std::make_pair(http::verb::get, api_path_prefix + "/api/accumulated"), std::bind(&VDFWebService::Handle_API_AccumulatedBlocks, this, _1));
 }
 
 void VDFWebService::Run()
@@ -327,6 +330,48 @@ http::message_generator VDFWebService::Handle_API_Rank(http::request<http::strin
         entries_json.append(std::move(entry_json));
     }
     res_json["entries"] = entries_json;
+
+    return PrepareResponseWithContent(http::status::ok, res_json, request.version(), request.keep_alive());
+}
+
+http::message_generator VDFWebService::Handle_API_AccumulatedBlocks(http::request<http::string_body> const& request)
+{
+    int start_height{0}, count{0};
+    std::string start_height_str, count_str;
+    bool ok;
+    std::tie(start_height_str, ok) = ParseUrlParameter(request.target(), "start");
+    if (ok) {
+        start_height = std::atoi(start_height_str.c_str());
+    }
+    std::tie(count_str, ok) = ParseUrlParameter(request.target(), "count");
+    if (ok) {
+        count = std::atoi(count_str.c_str());
+    }
+
+    Json::Value res_json(Json::arrayValue);
+    auto res = accumulated_amounts_querier_(start_height, count);
+    for (auto const& entry : res) {
+        Json::Value entry_json(Json::objectValue);
+        entry_json["height"] = entry.first;
+        entry_json["numOfDistributions"] = entry.second.num_of_distributions;
+        entry_json["numOfDistributed"] = entry.second.num_of_distributed;
+        entry_json["noMoreDistribution"] = entry.second.no_more_distribution;
+        entry_json["subsidy"] = entry.second.subsidy;
+        entry_json["originalAccumulated"] = entry.second.original_accumulated;
+        entry_json["actualAccumulated"] = entry.second.actual_accumulated;
+        entry_json["miner"] = entry.second.miner;
+        entry_json["reward"] = entry.second.reward;
+        entry_json["calculatedReward"] = entry.second.calc_reward;
+        Json::Value blocks_json(Json::arrayValue);
+        for (auto const& block : entry.second.contributed_blocks) {
+            Json::Value block_json(Json::objectValue);
+            block_json["amount"] = block.amount;
+            block_json["height"] = block.height;
+            blocks_json.append(block_json);
+        }
+        entry_json["contributedFromBlocks"] = blocks_json;
+        res_json.append(entry_json);
+    }
 
     return PrepareResponseWithContent(http::status::ok, res_json, request.version(), request.keep_alive());
 }

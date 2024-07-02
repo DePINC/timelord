@@ -1,6 +1,8 @@
 #include "test_utils.h"
 
 #include <cstring>
+#include <cstdlib>
+#include <ctime>
 
 bool IsFlag(char const* sz_argv, char const* flag_name)
 {
