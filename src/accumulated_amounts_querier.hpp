@@ -38,7 +38,7 @@ public:
 
     AccumulatedAmountMap operator()(int skip, int count) const
     {
-        auto res = m_pclient->Call("queryfullmortgageinfo", skip, count);
+        auto res = m_pclient->Call("queryfullmortgageinfo", std::to_string(skip), std::to_string(count));
         if (!res.result.isArray()) {
             throw std::runtime_error("the reply value is not an array");
         }

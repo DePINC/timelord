@@ -14,7 +14,7 @@ public:
     int operator()() const
     {
         auto res = m_prpc->Call("querynumoffullmortgageblocks");
-        return std::atoi(res.result.get_str().c_str());
+        return res.result.get_int();
     }
 
 private:

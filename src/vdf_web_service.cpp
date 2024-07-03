@@ -363,18 +363,19 @@ http::message_generator VDFWebService::Handle_API_AccumulatedBlocks(http::reques
         entry_json["miner"] = entry.second.miner;
         entry_json["reward"] = entry.second.reward;
         entry_json["calculatedReward"] = entry.second.calc_reward;
-        Json::Value blocks_json(Json::arrayValue);
+        Json::Value contributed_blocks_json(Json::arrayValue);
         for (auto const& block : entry.second.contributed_blocks) {
             Json::Value block_json(Json::objectValue);
             block_json["amount"] = block.amount;
             block_json["height"] = block.height;
-            blocks_json.append(block_json);
+            contributed_blocks_json.append(block_json);
         }
-        entry_json["contributedFromBlocks"] = blocks_json;
+        entry_json["contributedFromBlocks"] = contributed_blocks_json;
+        // save and go next
         blocks_json.append(entry_json);
     }
 
-    Json::Value res_json(Json::arrayValue);
+    Json::Value res_json(Json::objectValue);
     res_json["blocks"] = blocks_json;
     res_json["total"] = accumulated_count_querier_();
     res_json["skip"] = skip;
