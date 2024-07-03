@@ -36,9 +36,9 @@ public:
         assert(m_pclient != nullptr);
     }
 
-    AccumulatedAmountMap operator()(int from_height, int num_blocks) const
+    AccumulatedAmountMap operator()(int skip, int count) const
     {
-        auto res = m_pclient->Call("queryfullmortgageinfo", from_height, num_blocks);
+        auto res = m_pclient->Call("queryfullmortgageinfo", skip, count);
         if (!res.result.isArray()) {
             throw std::runtime_error("the reply value is not an array");
         }

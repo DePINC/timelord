@@ -39,6 +39,6 @@ using RecentlyNetspaceSizeQuerierType = std::function<uint64_t()>;
 
 using VDFProofSubmitterType = std::function<void(uint256 const& challenge, Bytes const& y, Bytes const& proof, int witness_type, uint64_t iters, int duration)>;
 
-using AccumulatedAmountsQuerierType = std::function<AccumulatedAmountMap(int, int)>; // start from which height, count number of blocks. From higher block to lower block
+using AccumulatedAmountsQuerierType = std::function<AccumulatedAmountMap(int, int)>; // 0-skip full mortgage blocks, 1-the number of blocks will be shown
 
 #endif
