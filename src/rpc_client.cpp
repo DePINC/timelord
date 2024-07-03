@@ -72,7 +72,6 @@ RPCClient::Result RPCClient::SendMethod(bool no_proxy, std::string const& method
     if (res.exists("result")) {
         result.result = res["result"];
     }
-    res["error"].empty();
     if (res.exists("error") && !res["error"].isNull()) {
         UniValue errorJson = res["error"];
         int code = errorJson["code"].get_int();
