@@ -137,6 +137,9 @@ TEST_F(WebServiceTest, FullTests)
             },
             [](int, int) -> AccumulatedAmountMap {
                 return {};
+            },
+            []() -> int {
+                return 0;
             });
     service.Run();
 

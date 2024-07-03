@@ -17,15 +17,18 @@
 #include "block_info_sqlite_saver.hpp"
 #include "last_block_info_querier.hpp"
 #include "local_db_netspace_size_querier.hpp"
-#include "rpc_rank_querier.hpp"
 #include "missing_block_importer.hpp"
 #include "netspace_querier.hpp"
 #include "num_heights_by_hours_querier.hpp"
 #include "pledge_info_rpc_querier.hpp"
 #include "recently_netspace_size_rpc_querier.hpp"
+#include "rpc_rank_querier.hpp"
 #include "supply_rpc_querier.hpp"
 #include "vdf_pack_by_challenge_querier.hpp"
 #include "vdf_proof_submitter.hpp"
+
+#include "accumulated_amounts_querier.hpp"
+#include "accumulated_blocks_count_querier.hpp"
 
 #include "vdf_web_service.h"
 
@@ -134,7 +137,7 @@ int main(int argc, char* argv[])
 
         // start web service
         PLOGI << tinyformat::format("web-service is listening on %s:%d", web_service_addr, web_service_port);
-        VDFWebService web_service(ioc, web_service_addr, web_service_port, 30, web_service_prefix, fork_height, NumHeightsByHoursQuerier(db, fork_height), BlockInfoRangeLocalDBQuerier(db), NetspaceSQLiteQuerier(db, true), status_querier, RPCRankQuerier(&rpc, fork_height), SupplyRPCQuerier(rpc), PledgeInfoRPCQuerier(rpc), RecentlyNetspaceSizeRPCQuerier(rpc), AccumulatedAmountsQuerier(&rpc));
+        VDFWebService web_service(ioc, web_service_addr, web_service_port, 30, web_service_prefix, fork_height, NumHeightsByHoursQuerier(db, fork_height), BlockInfoRangeLocalDBQuerier(db), NetspaceSQLiteQuerier(db, true), status_querier, RPCRankQuerier(&rpc, fork_height), SupplyRPCQuerier(rpc), PledgeInfoRPCQuerier(rpc), RecentlyNetspaceSizeRPCQuerier(rpc), AccumulatedAmountsQuerier(&rpc), AccumulatedBlocksCountQuerier(&rpc));
         web_service.Run();
 
         // start timelord

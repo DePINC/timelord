@@ -60,7 +60,7 @@ std::tuple<std::string, bool> ParseUrlParameter(std::string_view target, std::st
     return std::make_tuple((*it).value, true);
 }
 
-VDFWebService::VDFWebService(asio::io_context& ioc, std::string_view addr, uint16_t port, int expired_after_secs, std::string api_path_prefix, int fork_height, NumHeightsByHoursQuerierType num_heights_by_hours_querier, BlockInfoRangeQuerierType block_info_range_querier, NetspaceQuerierType netspace_querier, TimelordStatusQuerierType status_querier, RankQuerierType rank_querier, SupplyQuerierType supply_querier, PledgeInfoQuerierType pledge_info_querier, RecentlyNetspaceSizeQuerierType recently_netspace_querier, AccumulatedAmountsQuerierType accumulated_amounts_querier)
+VDFWebService::VDFWebService(asio::io_context& ioc, std::string_view addr, uint16_t port, int expired_after_secs, std::string api_path_prefix, int fork_height, NumHeightsByHoursQuerierType num_heights_by_hours_querier, BlockInfoRangeQuerierType block_info_range_querier, NetspaceQuerierType netspace_querier, TimelordStatusQuerierType status_querier, RankQuerierType rank_querier, SupplyQuerierType supply_querier, PledgeInfoQuerierType pledge_info_querier, RecentlyNetspaceSizeQuerierType recently_netspace_querier, AccumulatedAmountsQuerierType accumulated_amounts_querier, AccumulatedCountQuerierType accumulated_count_querier)
     : web_service_(ioc, tcp::endpoint(asio::ip::address::from_string(std::string(addr)), port), expired_after_secs, std::bind(&VDFWebService::HandleRequest, this, _1))
     , fork_height_(fork_height)
     , num_heights_by_hours_querier_(std::move(num_heights_by_hours_querier))
@@ -72,6 +72,7 @@ VDFWebService::VDFWebService(asio::io_context& ioc, std::string_view addr, uint1
     , pledge_info_querier_(std::move(pledge_info_querier))
     , recently_netspace_querier_(std::move(recently_netspace_querier))
     , accumulated_amounts_querier_(std::move(accumulated_amounts_querier))
+    , accumulated_count_querier_(std::move(accumulated_count_querier))
 {
     web_req_handler_.Register(std::make_pair(http::verb::get, api_path_prefix + "/api/summary"), std::bind(&VDFWebService::Handle_API_Summary, this, _1));
     web_req_handler_.Register(std::make_pair(http::verb::get, api_path_prefix + "/api/status"), std::bind(&VDFWebService::Handle_API_Status, this, _1));
@@ -336,20 +337,20 @@ http::message_generator VDFWebService::Handle_API_Rank(http::request<http::strin
 
 http::message_generator VDFWebService::Handle_API_AccumulatedBlocks(http::request<http::string_body> const& request)
 {
-    int start_height{0}, count{0};
+    int skip { 0 }, count { 0 };
     std::string start_height_str, count_str;
     bool ok;
     std::tie(start_height_str, ok) = ParseUrlParameter(request.target(), "start");
     if (ok) {
-        start_height = std::atoi(start_height_str.c_str());
+        skip = std::atoi(start_height_str.c_str());
     }
     std::tie(count_str, ok) = ParseUrlParameter(request.target(), "count");
     if (ok) {
         count = std::atoi(count_str.c_str());
     }
 
-    Json::Value res_json(Json::arrayValue);
-    auto res = accumulated_amounts_querier_(start_height, count);
+    Json::Value blocks_json(Json::arrayValue);
+    auto res = accumulated_amounts_querier_(skip, count);
     for (auto const& entry : res) {
         Json::Value entry_json(Json::objectValue);
         entry_json["height"] = entry.first;
@@ -370,8 +371,14 @@ http::message_generator VDFWebService::Handle_API_AccumulatedBlocks(http::reques
             blocks_json.append(block_json);
         }
         entry_json["contributedFromBlocks"] = blocks_json;
-        res_json.append(entry_json);
+        blocks_json.append(entry_json);
     }
+
+    Json::Value res_json(Json::arrayValue);
+    res_json["blocks"] = blocks_json;
+    res_json["total"] = accumulated_count_querier_();
+    res_json["skip"] = skip;
+    res_json["count"] = count;
 
     return PrepareResponseWithContent(http::status::ok, res_json, request.version(), request.keep_alive());
 }
