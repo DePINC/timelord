@@ -27,7 +27,7 @@ public:
         details.subsidy = json["subsidy"].get_int64();
         details.subsidyHuman = json["subsidyHuman"].get_str();
         details.netspaceTB = json["netspaceTB"].get_str();
-        details.profitPerTB = json["profitPerTB"].get_int();
+        details.profitPerTB = json["profitPerTB"].get_int64();
         details.profitPerTBHuman = json["profitPerTBHuman"].get_str();
 
         if (!json.exists("profitFullmortgage") || !json["profitFullmortgage"].isArray()) {
