@@ -347,11 +347,11 @@ http::message_generator VDFWebService::Handle_API_Rank(http::request<http::strin
 http::message_generator VDFWebService::Handle_API_AccumulatedBlocks(http::request<http::string_body> const& request)
 {
     int skip { 0 }, count { 0 };
-    std::string start_height_str, count_str;
+    std::string skip_str, count_str;
     bool ok;
-    std::tie(start_height_str, ok) = ParseUrlParameter(request.target(), "start");
+    std::tie(skip_str, ok) = ParseUrlParameter(request.target(), "skip");
     if (ok) {
-        skip = std::atoi(start_height_str.c_str());
+        skip = std::atoi(skip_str.c_str());
     }
     std::tie(count_str, ok) = ParseUrlParameter(request.target(), "count");
     if (ok) {
@@ -360,7 +360,8 @@ http::message_generator VDFWebService::Handle_API_AccumulatedBlocks(http::reques
 
     Json::Value blocks_json(Json::arrayValue);
     auto res = accumulated_amounts_querier_(skip, count);
-    for (auto const& entry : res) {
+    for (auto it = std::crbegin(res); it != std::crend(res); ++it) {
+        auto const& entry = *it;
         Json::Value entry_json(Json::objectValue);
         entry_json["height"] = entry.first;
         entry_json["numOfDistributions"] = entry.second.num_of_distributions;
