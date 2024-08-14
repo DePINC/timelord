@@ -175,6 +175,14 @@ http::message_generator VDFWebService::Handle_API_Status(http::request<http::str
     pledge_info_json["pledges"] = pledges_json;
     status_value["pledge_info"] = pledge_info_json;
 
+    auto profit_details = profit_details_querier_(7, 0);
+
+    Json::Value profit_details_json;
+    profit_details_json["days"] = profit_details.days;
+    profit_details_json["profitFullmortgagePerPB"] = profit_details.profitFullmortgagePerPB;
+    profit_details_json["profitFullmortgagePerPBHuman"] = profit_details.profitFullmortgagePerPBHuman;
+    status_value["profit_fullmortgage"] = profit_details_json;
+
     // prepare body
     return PrepareResponseWithContent(http::status::ok, status_value, request.version(), request.keep_alive());
 }

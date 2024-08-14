@@ -6,34 +6,6 @@
 #include <string>
 #include <vector>
 
-/*
-{
-  "height": 1010000,
-  "subsidy": 6750000000,
-  "subsidyHuman": "67.50",
-  "netspaceTB": "523,733",
-  "profitPerTB": 43304508,
-  "profitPerTBHuman": "0.43304508",
-  "profitFullmortgage": [
-    {
-      "address": "3JLVceFYAgWsq8jk97w7FA1itvGvg7WKBn",
-      "netspaceTB": "28,836",
-      "latestHeight": "1,009,983"
-    },
-    {
-      "address": "3PnyxgPGi58qk6jr8H5NGpsJRSEfndA1uL",
-      "netspaceTB": "519",
-      "latestHeight": "1,009,235"
-    }
-  ],
-  "profitFullmortgagePerTB": 738306688,
-  "profitFullmortgagePerTBHuman": "7.38306688",
-  "profitFullmortgagePerPB": 738306688000,
-  "profitFullmortgagePerPBHuman": "7383.06688",
-  "days": 7
-}
-*/
-
 struct ProfitMiner {
     std::string address;
     std::string netspaceTB;
