@@ -12,6 +12,7 @@
 #include "supply_data.h"
 #include "timelord_status.h"
 #include "vdf_record.h"
+#include "profit_details.h"
 
 using TimelordStatusQuerierType = std::function<TimelordStatus()>;
 
@@ -42,5 +43,7 @@ using VDFProofSubmitterType = std::function<void(uint256 const& challenge, Bytes
 using AccumulatedAmountsQuerierType = std::function<AccumulatedAmountMap(int, int)>; // 0-skip full mortgage blocks, 1-the number of blocks will be shown
 
 using AccumulatedCountQuerierType = std::function<int()>;
+
+using ProfitDetailsQuerierType = std::function<ProfitDetails(int days, int from_height)>;
 
 #endif

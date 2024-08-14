@@ -140,6 +140,9 @@ TEST_F(WebServiceTest, FullTests)
             },
             []() -> int {
                 return 0;
+            },
+            [](int, int) -> ProfitDetails {
+                return {};
             });
     service.Run();
 

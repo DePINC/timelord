@@ -60,7 +60,7 @@ std::tuple<std::string, bool> ParseUrlParameter(std::string_view target, std::st
     return std::make_tuple((*it).value, true);
 }
 
-VDFWebService::VDFWebService(asio::io_context& ioc, std::string_view addr, uint16_t port, int expired_after_secs, std::string api_path_prefix, int fork_height, NumHeightsByHoursQuerierType num_heights_by_hours_querier, BlockInfoRangeQuerierType block_info_range_querier, NetspaceQuerierType netspace_querier, TimelordStatusQuerierType status_querier, RankQuerierType rank_querier, SupplyQuerierType supply_querier, PledgeInfoQuerierType pledge_info_querier, RecentlyNetspaceSizeQuerierType recently_netspace_querier, AccumulatedAmountsQuerierType accumulated_amounts_querier, AccumulatedCountQuerierType accumulated_count_querier)
+VDFWebService::VDFWebService(asio::io_context& ioc, std::string_view addr, uint16_t port, int expired_after_secs, std::string api_path_prefix, int fork_height, NumHeightsByHoursQuerierType num_heights_by_hours_querier, BlockInfoRangeQuerierType block_info_range_querier, NetspaceQuerierType netspace_querier, TimelordStatusQuerierType status_querier, RankQuerierType rank_querier, SupplyQuerierType supply_querier, PledgeInfoQuerierType pledge_info_querier, RecentlyNetspaceSizeQuerierType recently_netspace_querier, AccumulatedAmountsQuerierType accumulated_amounts_querier, AccumulatedCountQuerierType accumulated_count_querier, ProfitDetailsQuerierType profit_details_querier)
     : web_service_(ioc, tcp::endpoint(asio::ip::address::from_string(std::string(addr)), port), expired_after_secs, std::bind(&VDFWebService::HandleRequest, this, _1))
     , fork_height_(fork_height)
     , num_heights_by_hours_querier_(std::move(num_heights_by_hours_querier))
@@ -73,6 +73,7 @@ VDFWebService::VDFWebService(asio::io_context& ioc, std::string_view addr, uint1
     , recently_netspace_querier_(std::move(recently_netspace_querier))
     , accumulated_amounts_querier_(std::move(accumulated_amounts_querier))
     , accumulated_count_querier_(std::move(accumulated_count_querier))
+    , profit_details_querier_(std::move(profit_details_querier))
 {
     web_req_handler_.Register(std::make_pair(http::verb::get, api_path_prefix + "/api/summary"), std::bind(&VDFWebService::Handle_API_Summary, this, _1));
     web_req_handler_.Register(std::make_pair(http::verb::get, api_path_prefix + "/api/status"), std::bind(&VDFWebService::Handle_API_Status, this, _1));

@@ -30,6 +30,8 @@
 #include "accumulated_amounts_querier.hpp"
 #include "accumulated_blocks_count_querier.hpp"
 
+#include "profit_details_rpc_querier.hpp"
+
 #include "vdf_web_service.h"
 
 #include "timelord.h"
@@ -137,7 +139,7 @@ int main(int argc, char* argv[])
 
         // start web service
         PLOGI << tinyformat::format("web-service is listening on %s:%d", web_service_addr, web_service_port);
-        VDFWebService web_service(ioc, web_service_addr, web_service_port, 30, web_service_prefix, fork_height, NumHeightsByHoursQuerier(db, fork_height), BlockInfoRangeLocalDBQuerier(db), NetspaceSQLiteQuerier(db, true), status_querier, RPCRankQuerier(&rpc, fork_height), SupplyRPCQuerier(rpc), PledgeInfoRPCQuerier(rpc), RecentlyNetspaceSizeRPCQuerier(rpc), AccumulatedAmountsQuerier(&rpc), AccumulatedBlocksCountQuerier(&rpc));
+        VDFWebService web_service(ioc, web_service_addr, web_service_port, 30, web_service_prefix, fork_height, NumHeightsByHoursQuerier(db, fork_height), BlockInfoRangeLocalDBQuerier(db), NetspaceSQLiteQuerier(db, true), status_querier, RPCRankQuerier(&rpc, fork_height), SupplyRPCQuerier(rpc), PledgeInfoRPCQuerier(rpc), RecentlyNetspaceSizeRPCQuerier(rpc), AccumulatedAmountsQuerier(&rpc), AccumulatedBlocksCountQuerier(&rpc), ProfitDetailsRPCQuerier(&rpc));
         web_service.Run();
 
         // start timelord
