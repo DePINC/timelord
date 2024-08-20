@@ -40,7 +40,6 @@ public:
             }
             ProfitMiner miner;
             miner.address = entry_json["address"].get_str();
-            miner.netspaceTB = entry_json["netspaceTB"].get_str();
             miner.latestHeight = entry_json["latestHeight"].get_str();
             details.profitFullmortgage.push_back(std::move(miner));
         }

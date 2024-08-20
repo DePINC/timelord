@@ -8,7 +8,6 @@
 
 struct ProfitMiner {
     std::string address;
-    std::string netspaceTB;
     std::string latestHeight;
 };
 
