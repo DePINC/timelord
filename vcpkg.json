@@ -7,13 +7,19 @@
         "curl",
         "sqlite3",
         "openssl",
-        "boost-asio",
-        "boost-beast",
-        "boost-url",
-        "gtest"
+        "gtest",
+        {
+            "name": "boost-asio",
+            "version>=": "1.82.0"
+        },
+        {
+            "name": "boost-beast",
+            "version>=": "1.82.0"
+        },
+        {
+            "name": "boost-url",
+            "version>=": "1.82.0"
+        }
     ],
-    "builtin-baseline": "ab887c562326c686478284d9076d722c1ec4b48c",
-    "overrides": [
-        { "name": "boost", "version": "1.82.0" }
-    ]
+    "builtin-baseline": "ab887c562326c686478284d9076d722c1ec4b48c"
 }

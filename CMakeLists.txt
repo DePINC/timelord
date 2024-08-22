@@ -21,7 +21,7 @@ include(FetchContent)
 FetchContent_Declare(
     vdf
     GIT_REPOSITORY https://github.com/depinc/vdf
-    GIT_TAG v1.0.3
+    GIT_TAG v1.0.4
 )
 
 FetchContent_Declare(
