@@ -52,3 +52,19 @@ Now you can configure your miner program to connect to the Timelord by adding th
 }
 
 ```
+
+## Build docker image locally
+
+*You don't need to build your own image, pulling it from hub.docker.com is enough for common users.*
+
+To build the docker image, just run the following command:
+
+```bash
+docker build . -t timelord --network host
+```
+
+If you want to build the docker image through a proxy server, let's say it is 'http://192.168.0.200', you can run the following command:
+
+```bash
+docker build . -t timelord --network host --build-arg PROXY=http://192.168.0.200:8080
+```
