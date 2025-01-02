@@ -1,21 +1,26 @@
 FROM debian:stable AS build
 
+ARG PROXY
+
 RUN mkdir /app
 
-# RUN echo 'Acquire::http::Proxy "http://192.168.1.200:8080";' >> /etc/apt/apt.conf
-# RUN echo 'Acquire::https::Proxy "http://192.168.1.200:8080";' >> /etc/apt/apt.conf
-
-# RUN echo "proxy=http://192.168.1.200:8080" > ~/.curlrc
-
-# RUN export ALL_PROXY=http://192.168.1.200:8080
-# RUN export HTTP_PROXY=http://192.168.1.200:8080
-# RUN export HTTPS_PROXY=http://192.168.1.200:8080
+# Add proxy configuration if PROXY is set
+RUN if [ -n "$PROXY" ]; then \
+      echo "Acquire::http::Proxy \"$PROXY\";" >> /etc/apt/apt.conf && \
+      echo "Acquire::https::Proxy \"$PROXY\";" >> /etc/apt/apt.conf && \
+      echo "proxy=$PROXY" > ~/.curlrc && \
+      export ALL_PROXY=$PROXY && \
+      export HTTP_PROXY=$PROXY && \
+      export HTTPS_PROXY=$PROXY; \
+    fi
 
 RUN apt update && apt upgrade --yes
 RUN apt install curl gcc zip unzip tar cmake g++ pkg-config automake autoconf git libssl-dev libtool yasm texinfo libboost-all-dev libgmp-dev --yes
 
-# RUN git config --global http.proxy http://192.168.1.200:8080
-# RUN git config --global http.sslVerify false
+RUN if [ -n "$PROXY" ]; then \
+      git config --global http.proxy $PROXY && \
+      git config --global http.sslVerify false; \
+    fi
 
 RUN git clone https://github.com/Kitware/CMake /cmake && cd /cmake && ./configure && make -j3 && make install
 
