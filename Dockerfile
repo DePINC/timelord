@@ -36,4 +36,4 @@ EXPOSE 19191
 
 EXPOSE 39393
 
-CMD ["/timelord"]
+ENTRYPOINT [ "/timelord", "--vdf_client-path=/vdf_client", "--db=/mnt/timelord.sqlite3", "--bind=0.0.0.0", "--port=19191", "--logfile=/mnt/timelord.log" ]
