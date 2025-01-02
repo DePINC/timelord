@@ -2,6 +2,8 @@
 
 #include <tinyformat.h>
 
+#include <tuple>
+
 #include <plog/Log.h>
 
 #include "sqlite_stmt_wrap.h"
