@@ -27,11 +27,19 @@ docker pull depinc/timelord:latest
 
 2. Start the Timelord container using the `docker run` command. The Docker image includes all necessary binaries to run Timelord on your local system. Use the following command to start the container:
 
+*The following commands assume that the DePINC wallet is running on your localhost, listening on port 8732 (the default RPC port). The following two sections provide two ways to grant access permission from the DePINC wallet RPC service.*
+
+### Prefer to use a custom username and password
+
+If you prefer to use a custom username and password, please use the following command instead:
+
 ```bash
-docker run --network host -v ./:/mnt -p 19191:19191 --name timelord depinc/timelord:latest --mainnet --bind 0.0.0.0 --rpc localhost:8732 --rpc-user rpcuser --rpc-password rpcpassword
+docker run --network host -v ./:/mnt -p 19191:19191 --name timelord depinc/timelord:latest --mainnet --bind 0.0.0.0 --rpc localhost:8732 --rpc-user <your-username> --rpc-password <your-password>
 ```
 
-The command assumes that the Depinc wallet is running on your localhost, listening on port 8732 (the default RPC port), with the username 'rpcuser' and password 'rpcpassword'.
+Replace `<your-username>` and `<your-password>` with your desired username and password.
+
+### Prefer to use the cookie file
 
 If you prefer to use a cookie file from '$HOME/.depinc/.cookie', please use the following command instead:
 
