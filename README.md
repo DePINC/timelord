@@ -50,7 +50,23 @@ Now you can configure your miner program to connect to the Timelord by adding th
         "localhost:19191"
     ],
 }
+```
 
+## Test VDF speed
+
+To test your computer's power, please run the vdf bench program. It's already packed in the docker image, please run the following command:
+
+```bash
+docker run --entrypoint "" -it depinc/timelord /vdf_bench square_asm 1000000
+```
+
+The result looks like the following, which means your computer can solve VDF iterations at a rate of 78.6K per second:
+
+```
+Time: 12707 ms; n_slow: 213; speed: 78.6K ips
+a = 0x75cae01275396eecb97f56761eaa431fda912c8f06467f0e04c34cdc250bfde37403a4d8287f128d9d0e0fec84e80b30892ec24ae385727fc95f8d1192a9314
+b = -0x8c5609e0d6a8d23874e25334dfeae89121739659d6312b4b5a6b7d96a7d9e3478bd21bc34f2288b67f1ea785fecc40c8bbfb4301ccec012b7d9a7e3f2e698d
+c = 0x6d345879ff552bb1d1b7ca7b2fbcb07c5dddc25728ed1b35263b6b1354a79bcf546ddfed9d13e7a35c335a57ac9e367f332bfb6707c0983edff5d7b75f99f1834
 ```
 
 ## Build docker image locally
