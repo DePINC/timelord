@@ -1,4 +1,13 @@
 build/
-.git
+_deps/
+CMakeFiles/
+# .git
 .cache
 .vscode
+*.log
+*.cmake
+vcpkg_installed/
+CMakeCache.txt
+compile_commands.json
+Makefile
+CTestTestfile.cmake

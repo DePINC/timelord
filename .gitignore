@@ -3,6 +3,7 @@ build
 .vscode
 .DS_Store
 timelord.log
+vcpkg-bootstrap.log
 vcpkg_installed
 vcpkg-manifest-install.log
 *.sqlite3

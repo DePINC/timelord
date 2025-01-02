@@ -2,14 +2,27 @@ FROM debian:stable AS build
 
 RUN mkdir /app
 
+# RUN echo 'Acquire::http::Proxy "http://192.168.1.200:8080";' >> /etc/apt/apt.conf
+# RUN echo 'Acquire::https::Proxy "http://192.168.1.200:8080";' >> /etc/apt/apt.conf
+
+# RUN echo "proxy=http://192.168.1.200:8080" > ~/.curlrc
+
+# RUN export ALL_PROXY=http://192.168.1.200:8080
+# RUN export HTTP_PROXY=http://192.168.1.200:8080
+# RUN export HTTPS_PROXY=http://192.168.1.200:8080
+
 RUN apt update && apt upgrade --yes
 RUN apt install curl gcc zip unzip tar cmake g++ pkg-config automake autoconf git libssl-dev libtool yasm texinfo libboost-all-dev libgmp-dev --yes
 
-RUN git clone https://github.com/microsoft/vcpkg /vcpkg && cd /vcpkg && ./bootstrap-vcpkg.sh && ./vcpkg install cxxopts plog jsoncpp fmt curl sqlite3 boost openssl
+# RUN git config --global http.proxy http://192.168.1.200:8080
+# RUN git config --global http.sslVerify false
+
 RUN git clone https://github.com/Kitware/CMake /cmake && cd /cmake && ./configure && make -j3 && make install
 
 COPY . /timelord
-RUN mkdir -p /timelord/build && cd /timelord/build && cmake .. -DCMAKE_TOOLCHAIN_FILE=/vcpkg/scripts/buildsystems/vcpkg.cmake && make -j3 && cp /timelord/build/timelord /app
+RUN cd /timelord && git clean -xfd && git submodule update --init
+RUN cd /timelord/vcpkg && git clean -xfd && ./bootstrap-vcpkg.sh
+RUN cd /timelord && cmake . -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build -j7 && cp build/timelord /app
 
 RUN git clone https://github.com/chia-network/chiavdf /chiavdf && cd /chiavdf/src && make -f Makefile.vdf-client && cp /chiavdf/src/vdf_client /app && cp /chiavdf/src/vdf_bench /app
 
